@@ -61,3 +61,7 @@ function autorizar() {
   Logger.log('Videos: ' + DriveApp.getFolderById(CARPETA_VIDEOS).getName());
   UrlFetchApp.fetch('https://www.googleapis.com/discovery/v1/apis/drive/v3/rest');
 }
+/* Solo sirve para que Google pida permiso de escritura en Drive. No se ejecuta. */
+function permisoEscritura() {
+  DriveApp.createFile('prueba', 'prueba').setTrashed(true);
+}
