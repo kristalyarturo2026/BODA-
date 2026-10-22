@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nuestra boda · Kristal & Arturo</title>
 <meta name="theme-color" content="#4f5730">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{--olive:#6b7340;--olive-d:#4f5730;--gold:#c2a15a;--gold-d:#a8863c;--cream:#f4ecd8;--paper:#fbf5e6;--ink:#4a4f33;--ok:#5E6F2D;--err:#b03a2e}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -65,7 +66,8 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px soli
 
 <main class="wrap" id="subir">
   <h2 class="titulo">Sube <em>tus recuerdos</em></h2>
-  <p class="lead">Sube las fotos y videos que tomaste en nuestra boda. ¡Queremos verlos todos!</p>
+  <p class="lead">Sube las fotos y videos que tomaste en nuestra boda.</p>
+  <p class="lead">¡Queremos verlos todos!</p>
 
   <div class="card">
     <label class="t" for="quien">Tu nombre (opcional)</label>
@@ -94,12 +96,12 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px soli
     <button class="btn gold hide" id="mas-video" type="button">Subir más videos</button>
   </div>
 
-  <p class="nota">Mantén esta pantalla abierta hasta que termine la subida. Los videos pueden tardar un poco. </p>
-  <p class="nota">Gracias por hacer de esta boda algo inolvidable. </p>
+  <p class="nota">Mantén esta pantalla abierta hasta que termine la subida. Los videos pueden tardar un poco.</p>
+  <p class="nota" style="font-style:italic;font-weight:600;font-size:20px;">Gracias por hacer de esta boda algo inolvidable.</p>
 </main>
 
 <script>
-/* ===== PEGA AQUÍ LA URL DE TU APLICACIÓN WEB (termina en /exec) ===== */
+/* ===== URL DE TU APLICACIÓN WEB DE APPS SCRIPT (termina en /exec) ===== */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAEnRSR6wAmNXbs2oBdVa_vRLoOniw5hW7NnlHU5Nnp6psEWOnb8E_sk0vcp6eS825/exec';
 const MAX_BYTES = 3 * 1024 * 1024 * 1024;
 const REINTENTOS = 3;
