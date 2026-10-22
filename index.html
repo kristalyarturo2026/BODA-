@@ -3,28 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Comparte tus fotos · Kristal & Arturo</title>
-<meta name="theme-color" content="#5E6F2D">
+<meta name="theme-color" content="#4f5730">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 :root{--olive:#6b7340;--olive-d:#4f5730;--gold:#c2a15a;--gold-d:#a8863c;--cream:#f4ecd8;--paper:#fbf5e6;--ink:#4a4f33;--ok:#5E6F2D;--err:#b03a2e}
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--ink);background:var(--cream);min-height:100svh;
- padding:env(safe-area-inset-top) 18px calc(30px + env(safe-area-inset-bottom));
  background-image:radial-gradient(circle at 0 0,rgba(150,105,45,.14),transparent 30%),radial-gradient(circle at 100% 100%,rgba(150,105,45,.16),transparent 32%)}
-.wrap{max-width:520px;margin:0 auto;text-align:center;padding-top:34px}
-.eyebrow{font-size:13px;letter-spacing:.38em;text-indent:.38em;text-transform:uppercase;color:var(--gold-d);font-weight:600}
-h1{font-family:'Great Vibes',cursive;font-weight:400;font-size:clamp(46px,13vw,64px);color:var(--olive);line-height:1.15;margin:8px 0 10px}
-h1 em{display:block;color:var(--gold-d);font-style:normal}
+
+/* ===== Portada a pantalla completa ===== */
+.hero{position:relative;height:100svh;min-height:480px;overflow:hidden;color:#fff;display:flex;align-items:flex-end;background:var(--olive-d)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(28,26,12,.82) 0%,rgba(28,26,12,.4) 36%,rgba(28,26,12,0) 64%)}
+.hero-txt{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;padding:0 18px calc(44px + env(safe-area-inset-bottom));text-align:left}
+.hero h1{font-family:'Great Vibes',cursive;font-weight:400;text-transform:none;letter-spacing:0;font-size:clamp(58px,15vw,104px);line-height:1.22;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.hero p{font-size:22px;font-style:italic;margin:22px 0 52px;text-shadow:0 1px 10px rgba(0,0,0,.4)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.55);color:#fff;text-decoration:none;font:700 16px 'Cormorant Garamond',serif;letter-spacing:.12em;text-transform:uppercase;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.chip:active{background:rgba(255,255,255,.35)}
+.chip:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* ===== Contenido ===== */
+.wrap{max-width:520px;margin:0 auto;text-align:center;padding:42px 18px calc(30px + env(safe-area-inset-bottom));scroll-margin-top:0}
+.eyebrow{font-family:'Great Vibes',cursive;font-size:clamp(34px,9vw,44px);letter-spacing:0;text-indent:0;text-transform:none;color:var(--gold-d);font-weight:400;line-height:1.1}
+.titulo{font-family:'Great Vibes',cursive;font-weight:400;font-size:clamp(46px,13vw,64px);color:var(--olive);line-height:1.15;margin:8px 0 10px}
+.titulo em{display:block;color:var(--gold-d);font-style:normal}
 .lead{font-size:21px;font-style:italic;line-height:1.45;margin-bottom:22px}
-.card{background:var(--paper);border:1px solid rgba(194,161,90,.55);border-radius:14px;padding:22px 18px;box-shadow:0 10px 26px rgba(80,75,40,.12);text-align:left}
+.card{background:var(--paper);border:1px solid rgba(194,161,90,.55);border-radius:14px;padding:22px 18px;box-shadow:0 10px 26px rgba(80,75,40,.12);text-align:left;margin-bottom:18px}
+.card h2{font-family:'Great Vibes',cursive;font-weight:400;font-size:38px;color:var(--olive);line-height:1.1;text-align:center}
+.card .sub{font-size:18px;font-style:italic;text-align:center;margin:2px 0 16px}
 label.t{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-d);font-weight:600;margin-bottom:6px}
-input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(194,161,90,.55);background:#fffaf0;color:var(--ink);font:500 19px 'Cormorant Garamond',serif;margin-bottom:16px}
+input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(194,161,90,.55);background:#fffaf0;color:var(--ink);font:500 19px 'Cormorant Garamond',serif}
 .btn{display:block;width:100%;padding:16px;border-radius:999px;border:0;background:var(--olive);color:#fff;font:700 16px 'Cormorant Garamond',serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-align:center}
 .btn:active{background:var(--olive-d)}
-.btn[disabled]{opacity:.5}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .btn.gold{background:linear-gradient(135deg,#d6b86d,#b8943f);margin-top:12px}
-#lista{margin-top:16px;display:grid;gap:10px}
+.lista{margin-top:16px;display:grid;gap:10px}
 .f{background:#fffaf0;border:1px solid rgba(194,161,90,.4);border-radius:10px;padding:10px 12px}
 .f .n{display:flex;justify-content:space-between;gap:10px;font-size:16px;font-weight:600}
 .f .n span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -33,31 +48,54 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px soli
 .f.ok .bar i{background:var(--ok)} .f.err .bar i{background:var(--err)}
 .f small{display:block;font-size:14px;margin-top:4px;color:#7a7a5a}
 .f.err small{color:var(--err)}
-#resumen{margin-top:14px;font-size:19px;text-align:center;font-style:italic}
-.nota{margin-top:18px;font-size:16px;opacity:.85}
+.resumen{margin-top:14px;font-size:19px;text-align:center;font-style:italic}
+.nota{margin-top:6px;font-size:16px;opacity:.85}
 .hide{display:none}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="eyebrow">Kristal & Arturo</div>
-  <h1>Comparte <em>tus recuerdos</em></h1>
+
+<header class="hero">
+  <img id="abrazo" src="imagenes/abrazo.jpg" alt="Kristal y Arturo abrazados">
+  <div class="hero-txt">
+    <h1>Nuestra boda<br>K&amp;A</h1>
+    <a class="chip" href="#subir">Subir recuerdos <span aria-hidden="true">⌄</span></a>
+  </div>
+</header>
+
+<main class="wrap" id="subir">
+  <h2 class="titulo">Sube <em>tus recuerdos</em></h2>
   <p class="lead">Sube las fotos y videos que tomaste en nuestra boda. ¡Queremos verlos todos!</p>
 
   <div class="card">
     <label class="t" for="quien">Tu nombre (opcional)</label>
-    <input id="quien" type="text" placeholder="Ej. Familia Zepeda" maxlength="40" autocomplete="off">
+    <input id="quien" type="text" placeholder="Ej. Jose Martinez" maxlength="40" autocomplete="off">
+  </div>
 
-    <input id="picker" type="file" accept="image/*,video/*" multiple class="hide">
-    <button class="btn" id="elegir" type="button">Elegir fotos y videos</button>
+  <!-- Tarjeta de fotos -->
+  <div class="card" data-tipo="foto">
+    <h2>Fotos</h2>
+    <p class="sub">Para subir fotos</p>
+    <input id="picker-foto" type="file" accept="image/*" multiple class="hide">
+    <button class="btn" id="elegir-foto" type="button">Elegir fotos</button>
+    <div class="lista" id="lista-foto"></div>
+    <div class="resumen" id="resumen-foto"></div>
+    <button class="btn gold hide" id="mas-foto" type="button">Subir más fotos</button>
+  </div>
 
-    <div id="lista"></div>
-    <div id="resumen"></div>
-    <button class="btn gold hide" id="mas" type="button">Subir más</button>
+  <!-- Tarjeta de videos -->
+  <div class="card" data-tipo="video">
+    <h2>Videos</h2>
+    <p class="sub">Para subir videos</p>
+    <input id="picker-video" type="file" accept="video/*" multiple class="hide">
+    <button class="btn" id="elegir-video" type="button">Elegir videos</button>
+    <div class="lista" id="lista-video"></div>
+    <div class="resumen" id="resumen-video"></div>
+    <button class="btn gold hide" id="mas-video" type="button">Subir más videos</button>
   </div>
 
   <p class="nota">Mantén esta pantalla abierta hasta que termine la subida. Los videos pueden tardar un poco. 💚</p>
-</div>
+</main>
 
 <script>
 /* ===== PEGA AQUÍ LA URL DE TU APLICACIÓN WEB (termina en /exec) ===== */
@@ -66,19 +104,42 @@ const MAX_BYTES = 3 * 1024 * 1024 * 1024;
 const REINTENTOS = 3;
 
 const $ = id => document.getElementById(id);
-const picker = $('picker'), lista = $('lista'), resumen = $('resumen');
-let hechos = 0, fallidos = 0, total = 0, corriendo = false, cola = [], wake = null;
 
-$('elegir').onclick = () => picker.click();
-$('mas').onclick = () => { $('mas').classList.add('hide'); picker.click(); };
-picker.onchange = () => {
-  const arch = Array.from(picker.files || []);
-  picker.value = '';
-  if (!arch.length) return;
-  arch.forEach(f => { cola.push(crearFila(f)); total++; });
-  actualizarResumen();
-  if (!corriendo) procesar();
+/* Foto de portada: busca imagenes/abrazo con la extensión que tenga */
+const EXT_PORTADA = ['jpg', 'jpeg', 'png', 'webp', 'JPG', 'JPEG', 'PNG'];
+let extI = 0;
+$('abrazo').onerror = () => {
+  extI++;
+  if (extI < EXT_PORTADA.length) $('abrazo').src = 'imagenes/abrazo.' + EXT_PORTADA[extI];
+  else $('abrazo').classList.add('hide');
 };
+
+/* Cada tarjeta tiene su propia lista, resumen y contadores */
+const TIPOS = {
+  foto:  { prefijo: 'image/', sing: 'foto',  plur: 'fotos',  solo: 'Solo fotos en esta tarjeta' },
+  video: { prefijo: 'video/', sing: 'video', plur: 'videos', solo: 'Solo videos en esta tarjeta' }
+};
+let corriendo = false, cola = [], wake = null;
+
+Object.keys(TIPOS).forEach(t => {
+  const c = TIPOS[t];
+  c.picker  = $('picker-' + t);
+  c.lista   = $('lista-' + t);
+  c.resumen = $('resumen-' + t);
+  c.mas     = $('mas-' + t);
+  c.hechos = 0; c.fallidos = 0; c.total = 0;
+
+  $('elegir-' + t).onclick = () => c.picker.click();
+  c.mas.onclick = () => { c.mas.classList.add('hide'); c.picker.click(); };
+  c.picker.onchange = () => {
+    const arch = Array.from(c.picker.files || []);
+    c.picker.value = '';
+    if (!arch.length) return;
+    arch.forEach(f => { cola.push(crearFila(f, t)); c.total++; });
+    actualizarResumen(t);
+    if (!corriendo) procesar();
+  };
+});
 
 function mimeDe(f){
   if (f.type) return f.type;
@@ -89,43 +150,49 @@ function mimeDe(f){
 }
 function tam(b){ return b > 1048576 ? (b/1048576).toFixed(b > 1e8 ? 0 : 1) + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB'; }
 
-function crearFila(file){
+function crearFila(file, tipo){
   const el = document.createElement('div'); el.className = 'f';
   el.innerHTML = '<div class="n"><span></span><span></span></div><div class="bar"><i></i></div><small>En espera…</small>';
   el.querySelector('.n span').textContent = file.name;
   el.querySelectorAll('.n span')[1].textContent = tam(file.size);
-  lista.appendChild(el);
-  return { file, el, bar: el.querySelector('i'), msg: el.querySelector('small') };
+  TIPOS[tipo].lista.appendChild(el);
+  return { file, tipo, el, bar: el.querySelector('i'), msg: el.querySelector('small') };
 }
 function estado(it, txt, cls){ it.msg.textContent = txt; if (cls) it.el.classList.add(cls); }
-function actualizarResumen(){
-  const falta = total - hechos - fallidos;
-  resumen.textContent = falta > 0 ? `Subiendo… ${hechos} de ${total} listos` :
-    (fallidos ? `${hechos} listos · ${fallidos} con error (toca "Subir más" para reintentar)` : `¡Gracias! ${hechos} archivo${hechos===1?'':'s'} subido${hechos===1?'':'s'} 🎉`);
+
+function actualizarResumen(t){
+  const c = TIPOS[t];
+  const falta = c.total - c.hechos - c.fallidos;
+  const pal = n => n === 1 ? c.sing : c.plur;
+  c.resumen.textContent = falta > 0
+    ? `Subiendo… ${c.hechos} de ${c.total} listos`
+    : (c.fallidos
+        ? `${c.hechos} listos · ${c.fallidos} con error (elígelos de nuevo con "Subir más")`
+        : `¡Gracias! ${c.hechos} ${pal(c.hechos)} subido${c.hechos === 1 ? '' : 's'} 🎉`);
 }
 
 async function procesar(){
   corriendo = true;
   try { if (navigator.wakeLock) wake = await navigator.wakeLock.request('screen'); } catch(e){}
   while (cola.length){
-    const it = cola.shift();
+    const it = cola.shift(), c = TIPOS[it.tipo];
     let ok = false, ultimo = '';
     for (let i = 1; i <= REINTENTOS && !ok; i++){
       try { estado(it, i > 1 ? `Reintentando (${i}/${REINTENTOS})…` : 'Preparando…'); await subir(it); ok = true; }
       catch(e){ ultimo = e.message || 'Error'; if (e.fatal) break; await new Promise(r => setTimeout(r, 1500 * i)); }
     }
-    if (ok){ hechos++; it.bar.style.width = '100%'; estado(it, '¡Listo! ✓', 'ok'); }
-    else { fallidos++; estado(it, 'No se pudo subir: ' + ultimo, 'err'); }
-    actualizarResumen();
+    if (ok){ c.hechos++; it.bar.style.width = '100%'; estado(it, '¡Listo! ✓', 'ok'); }
+    else { c.fallidos++; estado(it, 'No se pudo subir: ' + ultimo, 'err'); }
+    actualizarResumen(it.tipo);
   }
   corriendo = false;
   if (wake){ try{ wake.release(); }catch(e){} wake = null; }
-  $('mas').classList.remove('hide');
+  Object.keys(TIPOS).forEach(t => { if (TIPOS[t].total > 0) TIPOS[t].mas.classList.remove('hide'); });
 }
 
 async function subir(it){
-  const f = it.file, mime = mimeDe(f);
-  if (!mime.startsWith('image/') && !mime.startsWith('video/')) throw Object.assign(new Error('Solo fotos y videos'), {fatal:true});
+  const f = it.file, mime = mimeDe(f), c = TIPOS[it.tipo];
+  if (!mime.startsWith(c.prefijo)) throw Object.assign(new Error(c.solo), {fatal:true});
   if (f.size > MAX_BYTES) throw Object.assign(new Error('Archivo demasiado grande'), {fatal:true});
 
   // 1) pedir enlace de subida al script (text/plain evita preflight de CORS)
