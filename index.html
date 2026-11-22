@@ -21,6 +21,9 @@ body{font-family:'Cormorant Garamond',Georgia,serif;color:var(--ink);background:
 .hero .fondo{transform:scale(1.25);filter:blur(22px) brightness(.7) saturate(1.1)}
 /* Celular (vertical): la foto horizontal se ve COMPLETA arriba, sin recortar caras */
 @media (max-aspect-ratio:1/1){
+  header.hero{background:linear-gradient(180deg,#7d8650 0%,var(--olive) 45%,var(--olive-d) 100%)}
+  .hero .fondo{display:none}
+  header.hero::after{background:radial-gradient(120% 60% at 50% 100%,rgba(255,255,255,.08),transparent 60%)}
   .hero #abrazo{inset:auto 0 auto 0;top:max(env(safe-area-inset-top),13svh);height:auto;max-height:52svh;object-fit:contain;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 90%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 90%,transparent 100%)}
 }
