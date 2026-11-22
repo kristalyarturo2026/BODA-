@@ -52,15 +52,41 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px soli
 .resumen{margin-top:14px;font-size:19px;text-align:center;font-style:italic}
 .nota{margin-top:6px;font-size:16px;opacity:.85}
 .hide{display:none}
+
+/* ===== Galería ===== */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.gal{max-width:900px;margin:0 auto;padding:10px 12px calc(40px + env(safe-area-inset-bottom));text-align:center;scroll-margin-top:0}
+.filtros{display:inline-flex;gap:6px;margin:4px 0 16px;background:var(--paper);border:1px solid rgba(194,161,90,.55);border-radius:999px;padding:4px}
+.filtros button{border:0;background:transparent;color:var(--ink);font:700 14px 'Cormorant Garamond',serif;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px;border-radius:999px;cursor:pointer}
+.filtros button[aria-pressed=true]{background:var(--olive);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+@media (min-width:640px){.grid{grid-template-columns:repeat(4,1fr);gap:6px}}
+.grid button{position:relative;aspect-ratio:1;border:0;padding:0;background:#e9dfc2;border-radius:6px;overflow:hidden;cursor:pointer}
+.grid img{width:100%;height:100%;object-fit:cover;display:block}
+.grid .play{position:absolute;inset:auto auto 6px 6px;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;font:600 12px sans-serif;padding:3px 8px}
+.grid .sin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--olive)}
+.gal .vacio{font-size:19px;font-style:italic;margin:18px 0}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(15,14,8,.94);display:flex;align-items:center;justify-content:center;padding:52px 8px calc(56px + env(safe-area-inset-bottom))}
+.lb.hide{display:none}
+.lb img,.lb iframe{max-width:100%;max-height:100%;border:0;border-radius:6px}
+.lb iframe{width:min(100%,900px);aspect-ratio:9/16;max-height:100%;background:#000}
+.lb .x,.lb .nav{position:absolute;border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:999px;width:44px;height:44px;font-size:24px;cursor:pointer}
+.lb .x{top:calc(8px + env(safe-area-inset-top));right:10px}
+.lb .prev{left:8px;top:50%}.lb .next{right:8px;top:50%}
+.lb .pie{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#f4ecd8;font-size:18px;font-style:italic}
+.lb{background:rgba(15,14,8,.97)}
 </style>
 </head>
 <body>
 
 <header class="hero">
-  <img id="abrazo" src="imagenes/ninos.jpg" alt="Kristal y Arturo abrazados">
+  <img id="abrazo" src="imagenes/abrazo.jpg" alt="Kristal y Arturo abrazados">
   <div class="hero-txt">
     <h1>Nuestra boda<br>K&amp;A</h1>
-    <a class="chip" href="#subir">Subir recuerdos <span aria-hidden="true">⌄</span></a>
+    <div class="chips">
+      <a class="chip" href="#subir">Subir recuerdos <span aria-hidden="true">⌄</span></a>
+      <a class="chip" href="#galeria">Ver galería <span aria-hidden="true">⌄</span></a>
+    </div>
   </div>
 </header>
 
@@ -99,6 +125,27 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px soli
   <p class="nota">Mantén esta pantalla abierta hasta que termine la subida. Los videos pueden tardar un poco.</p>
   <p class="nota" style="font-style:italic;font-weight:600;font-size:20px;">Gracias por hacer de esta boda algo inolvidable.</p>
 </main>
+
+<section class="gal" id="galeria">
+  <h2 class="titulo">Galería <em>de recuerdos</em></h2>
+  <p class="lead">Lo que todos van compartiendo</p>
+  <div class="filtros" role="group" aria-label="Filtrar galería">
+    <button type="button" data-f="" aria-pressed="true">Todo</button>
+    <button type="button" data-f="f" aria-pressed="false">Fotos</button>
+    <button type="button" data-f="v" aria-pressed="false">Videos</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="vacio" id="gal-msg">Cargando…</p>
+  <button class="btn gold hide" id="gal-mas" type="button" style="max-width:520px;margin:16px auto 0">Ver más</button>
+</section>
+
+<div class="lb hide" id="lb" role="dialog" aria-modal="true" aria-label="Ver recuerdo">
+  <button class="x" id="lb-x" type="button" aria-label="Cerrar">×</button>
+  <button class="nav prev" id="lb-prev" type="button" aria-label="Anterior">‹</button>
+  <div id="lb-cont" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"></div>
+  <button class="nav next" id="lb-next" type="button" aria-label="Siguiente">›</button>
+  <div class="pie" id="lb-pie"></div>
+</div>
 
 <script>
 /* ===== URL DE TU APLICACIÓN WEB DE APPS SCRIPT (termina en /exec) ===== */
@@ -191,7 +238,89 @@ async function procesar(){
   corriendo = false;
   if (wake){ try{ wake.release(); }catch(e){} wake = null; }
   Object.keys(TIPOS).forEach(t => { if (TIPOS[t].total > 0) TIPOS[t].mas.classList.remove('hide'); });
+  setTimeout(cargarGaleria, 3000);
 }
+
+/* ===== Galería (solo para ver) ===== */
+const POR_PAGINA = 30;
+let galTodo = [], galVista = [], galFiltro = '', galMostrados = 0, lbI = -1;
+const mini = (id, w) => 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w' + w;
+
+async function cargarGaleria(){
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=galeria&_=' + Date.now());
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Error');
+    galTodo = j.items || [];
+    aplicarFiltro();
+  } catch(e){
+    if (!galTodo.length) $('gal-msg').textContent = 'No se pudo cargar la galería. Intenta de nuevo en un momento.';
+  }
+}
+
+function aplicarFiltro(){
+  galVista = galFiltro ? galTodo.filter(x => x.t === galFiltro) : galTodo;
+  $('grid').innerHTML = ''; galMostrados = 0;
+  pintarMas();
+  $('gal-msg').textContent = galVista.length ? '' : 'Aún no hay recuerdos aquí. ¡Sé el primero en subir uno!';
+  $('gal-msg').classList.toggle('hide', !!galVista.length);
+}
+
+function pintarMas(){
+  const hasta = Math.min(galVista.length, galMostrados + POR_PAGINA);
+  for (let i = galMostrados; i < hasta; i++){
+    const it = galVista[i], b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', (it.t === 'v' ? 'Video' : 'Foto') + (it.q ? ' de ' + it.q : ''));
+    const img = document.createElement('img');
+    img.loading = 'lazy'; img.alt = ''; img.src = mini(it.id, 400);
+    img.onerror = () => { img.remove(); const s = document.createElement('span'); s.className = 'sin'; s.textContent = it.t === 'v' ? '🎬' : '📷'; b.prepend(s); };
+    b.appendChild(img);
+    if (it.t === 'v'){ const p = document.createElement('span'); p.className = 'play'; p.textContent = '▶ Video'; b.appendChild(p); }
+    b.onclick = () => abrirLb(i);
+    $('grid').appendChild(b);
+  }
+  galMostrados = hasta;
+  $('gal-mas').classList.toggle('hide', galMostrados >= galVista.length);
+}
+
+function abrirLb(i){
+  lbI = i; const it = galVista[i], cont = $('lb-cont');
+  cont.innerHTML = '';
+  if (it.t === 'v'){
+    const f = document.createElement('iframe');
+    f.src = 'https://drive.google.com/file/d/' + encodeURIComponent(it.id) + '/preview';
+    f.allow = 'autoplay; fullscreen'; f.allowFullscreen = true; f.title = 'Video';
+    cont.appendChild(f);
+  } else {
+    const img = document.createElement('img');
+    img.src = mini(it.id, 1600); img.alt = it.q ? 'Foto de ' + it.q : 'Foto';
+    cont.appendChild(img);
+  }
+  $('lb-pie').textContent = it.q ? 'Compartido por ' + it.q : '';
+  $('lb-prev').classList.toggle('hide', i === 0);
+  $('lb-next').classList.toggle('hide', i >= galVista.length - 1);
+  $('lb').classList.remove('hide');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarLb(){ $('lb').classList.add('hide'); $('lb-cont').innerHTML = ''; document.body.style.overflow = ''; }
+
+$('lb-x').onclick = cerrarLb;
+$('lb-prev').onclick = () => { if (lbI > 0) abrirLb(lbI - 1); };
+$('lb-next').onclick = () => { if (lbI < galVista.length - 1){ if (lbI + 1 >= galMostrados) pintarMas(); abrirLb(lbI + 1); } };
+$('lb').onclick = e => { if (e.target.id === 'lb' || e.target.id === 'lb-cont') cerrarLb(); };
+document.addEventListener('keydown', e => {
+  if ($('lb').classList.contains('hide')) return;
+  if (e.key === 'Escape') cerrarLb();
+  if (e.key === 'ArrowLeft') $('lb-prev').click();
+  if (e.key === 'ArrowRight') $('lb-next').click();
+});
+$('gal-mas').onclick = pintarMas;
+document.querySelectorAll('.filtros button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.filtros button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  galFiltro = b.dataset.f; aplicarFiltro();
+});
+cargarGaleria();
 
 async function subir(it){
   const f = it.file, mime = mimeDe(f), c = TIPOS[it.tipo];

@@ -43,13 +43,55 @@ function doPost(e) {
     const h = r.getAllHeaders();
     const url = h['Location'] || h['location'];
     if (!url) return salida({ ok: false, error: 'Sin enlace de subida' });
+    try { CacheService.getScriptCache().remove('galeria'); } catch (e) {}   // para que la galería muestre lo nuevo
     return salida({ ok: true, url: url });
   } catch (err) {
     return salida({ ok: false, error: String(err) });
   }
 }
 
-function doGet() { return ContentService.createTextOutput('Listo ✔'); }
+function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'galeria') {
+    try { return salida(galeria_()); } catch (err) { return salida({ ok: false, error: String(err) }); }
+  }
+  return ContentService.createTextOutput('Listo ✔');
+}
+
+/* ===== Galería (solo lectura): lista las fotos y videos de las carpetas ===== */
+function galeria_() {
+  const cache = CacheService.getScriptCache();
+  const guardado = cache.get('galeria');
+  if (guardado) return JSON.parse(guardado);
+
+  const items = [];
+  [[CARPETA_FOTOS, 'f'], [CARPETA_VIDEOS, 'v']].forEach(function (par) {
+    const it = DriveApp.getFolderById(par[0]).getFiles();
+    while (it.hasNext()) {
+      const f = it.next();
+      if (!/^(image|video)\//.test(f.getMimeType())) continue;
+      const m = f.getName().match(/^(.+?)_\d{8}_\d{6}_\d+_/);
+      items.push({ id: f.getId(), t: par[1], d: f.getDateCreated().getTime(), q: m ? m[1] : '' });
+    }
+  });
+  items.sort(function (a, b) { return b.d - a.d; });
+  const out = { ok: true, items: items.slice(0, 3000) };
+  try { cache.put('galeria', JSON.stringify(out), 60); } catch (e) {}   // se actualiza cada minuto
+  return out;
+}
+
+/* Ejecuta esta función UNA vez: deja las carpetas como "cualquiera con el enlace puede VER".
+   Nadie puede borrar ni editar; solo tú (la dueña) puedes hacerlo desde tu Drive. */
+function compartirGaleria() {
+  [CARPETA_FOTOS, CARPETA_VIDEOS].forEach(function (id) {
+    const carpeta = DriveApp.getFolderById(id);
+    carpeta.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    const it = carpeta.getFiles();
+    while (it.hasNext()) {
+      try { it.next().setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
+    }
+    Logger.log('Compartida (solo ver): ' + carpeta.getName());
+  });
+}
 
 function salida(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
